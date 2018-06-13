@@ -1,14 +1,14 @@
 import java.net.*;
 import java.io.*;
 
-public class MulticastSample extends Thread {
+public class Multicast extends Thread {
     static final String M_ADDRESS = "224.0.0.100";
     static final int M_PORT = 25000;
     static final int BUFSIZE = 1024;
     InetAddress maddr;
     MulticastSocket socket;
 
-    MulticastSample() {
+    Multicast() {
         try {
             maddr = InetAddress.getByName(M_ADDRESS);
             socket = new MulticastSocket(M_PORT);
@@ -51,6 +51,6 @@ public class MulticastSample extends Thread {
     }
 
     public static void main(String args[]) {
-        new MulticastSample();
+        new Multicast();
     }
 }
