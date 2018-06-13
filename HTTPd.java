@@ -2,40 +2,41 @@ import java.io.*;
 import java.net.*;
 
 public class HTTPd {
-    HTTPd(String file){
-	try{
-	    ServerSocket ss = new ServerSocket(80);
-	    while(true){
-		Socket socket = ss.accept();
-		System.out.println("Connect From : "+(socket.getInetAddress()).getHostName());
-		FileInputStream fis = new FileInputStream(file);
-		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		OutputStream os = socket.getOutputStream();
-		
-		while(true){
-		    String str = br.readLine();
-		    System.out.println(str);
-		    if(str.equals(""))break;
-		}
-		
-		byte[] buf = new byte[1024];
-		while(true){
-		    int n = fis.read(buf);
-		    System.out.println("read "+n+" bytes");
-		    if(n==-1)break;
-		    os.write(buf,0,n);
-		}
-		socket.close();
-		fis.close();
-	    }
-	    
-	}catch(IOException e){
-	    e.printStackTrace();
-	    System.exit(1);
-	}
+    HTTPd(String file) {
+        try {
+            ServerSocket ss = new ServerSocket(80);
+            while (true) {
+                Socket socket = ss.accept();
+                System.out.println("Connect From : " + (socket.getInetAddress()).getHostName());
+                FileInputStream fis = new FileInputStream(file);
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter pw = new PrintWriter(socket.getOutputStream());
+                BufferedReader br2 = new BufferedReader(new FileReader(file));
+                while (true) {
+                    String str = br.readLine();
+                    System.out.println(str);
+                    if (str.equals(""))
+                        break;
+                }
+
+                String tmp;
+                while ((tmp = br2.readLine()) != null) {
+                    pw.println(tmp);
+                    pw.flush();
+                }
+                socket.close();
+                fis.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
-    public static void main(String args[]){
-	if(args.length!=1)System.exit(1);
-	new HTTPd(args[0]);
+
+    public static void main(String args[]) {
+        if (args.length != 1)
+            System.exit(1);
+        new HTTPd(args[0]);
     }
 }
